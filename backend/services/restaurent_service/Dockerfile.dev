@@ -1,0 +1,6 @@
+FROM alpine:3.17
+WORKDIR /
+COPY restaurent_service ./app
+COPY /services/restaurent_service/run.sh .
+
+ENTRYPOINT sh run.sh

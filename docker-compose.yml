@@ -1,0 +1,48 @@
+version: '3.9'
+services:
+  postgres-db:
+    image: postgres:14.2-alpine
+    ports:
+      - '15432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123123
+      POSTGRES_DB: sfood
+
+  consul:
+    image: consul:1.15
+    ports:
+      - 8500:8500
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - 4000:4000
+
+  migrate:
+    build:
+      context: ./migrate
+      dockerfile: ./Dockerfile.dev
+    environment:
+      MIGRATE_DSN: ${MIGRATE_DSN}
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - '16686:16686'
+      - '14268:14268'
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+
+  order_service:
+    build:
+      context: ./backend
+      dockerfile: ./services/order_service/Dockerfile.dev
+    environment:
+      DB_DRIVER: postgres
+      DB_DSN: ${DB_DSN}
+      CLERK_TOKEN: ${CLERK_TOKEN}
+      CONSUL_HOST: consul:8500
+      JAEGER_HOST: http://jaeger:14268/api/traces

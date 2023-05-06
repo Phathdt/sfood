@@ -1,0 +1,6 @@
+FROM alpine:3.17
+WORKDIR /
+COPY order_service ./app
+COPY /services/order_service/run.sh .
+
+ENTRYPOINT sh run.sh

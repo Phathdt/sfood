@@ -1,0 +1,8 @@
+
+*
+!*/
+!*.*
+
+/.env
+/backend/.idea/
+**/.DS_Store

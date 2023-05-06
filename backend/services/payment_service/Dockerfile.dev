@@ -1,0 +1,6 @@
+FROM alpine:3.17
+WORKDIR /
+COPY payment_service ./app
+COPY /services/payment_service/run.sh .
+
+ENTRYPOINT sh run.sh

@@ -1,0 +1,6 @@
+FROM alpine:3.17
+WORKDIR /
+COPY sfood-migrate ./sfood
+COPY /run.sh .
+
+ENTRYPOINT sh run.sh

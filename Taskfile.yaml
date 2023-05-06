@@ -1,0 +1,26 @@
+version: '3'
+
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+tasks:
+  gateway:
+    cmds:
+      - docker-compose build gateway
+      - docker-compose up gateway
+
+  migrate:
+    desc: migrate db
+    cmds:
+      - cd migrate && go run main.go {{.CLI_ARGS}}
+
+  generate-proto:
+    desc: generate proto files
+    cmds:
+      - cd backend/proto && buf generate
+
+  order_service:
+    cmds:
+      - cd backend && GOOS=linux GARCH=amd64 CGO_ENABLED=0 go build -o order_service services/order_service/main.go
+      - defer: cd backend && rm order_service
+      - docker-compose build order_service
+      - docker-compose up order_service
